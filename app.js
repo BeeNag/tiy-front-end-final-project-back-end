@@ -31,7 +31,7 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
 
   // find the user
   User.findOne({
-    username: request.body.email
+    email: request.body.email
   }, function handleQuery(error, user) {
 
     if (error) {
@@ -201,15 +201,99 @@ apiRouter.use(function verifyToken(request, response, next) {
   }
 });
 
-apiRouter.get('/items/', function getAllItems(request, response) {
+apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(request, response) {
 
-  response.json({
-    success: true
-  });
+	var archaeologist = new Archaeologist({
+		first_name: request.body.first_name,
+		last_name: request.body.last_name,
+		date_of_birth: request.body.date_of_birth,
+		address: request.body.address,
+		city: request.body.city,
+		postcode: request.body.postcode,
+		home_phone_number: request.body.home_phone_number,
+		mobile_phone_number: request.body.mobile_phone_number,
+		experience: request.body.experience,
+		specialism: request.body.specialism,
+		cscs_card: request.body.cscs_card,
+		description: request.body.description,
+		created_at: Date.now
+	});
 
+	archaeologist.save(function (error) {
+
+		if (error) {
+            response.status(500).json({
+              success: false,
+              message: 'Internal server error'
+            });
+
+            throw error;
+        }
+
+        response.json({
+            success: true
+        });
+	});
 });
 
-app.use('/api', apiRouter);
+apiRouter.post('/companies/', function createCompanyProfileDetails(request, response) {
+
+	var company = new Company({
+		name: request.body.name,
+		address: request.body.address,
+		city: request.body.city,
+		postcode: request.body.postcode,
+		phone_number: request.body.phone_number,
+		url: request.body.url,
+		description: description.body.description
+	});
+
+	company.save(function (error) {
+
+		if (error) {
+			response.status(500).json({
+				success: false,
+				message: 'Internal server error'
+			});
+
+			throw error;
+		}
+
+		response.json({
+			success: true
+		});
+	});
+});
+
+apiRouter.post('/excavations/', function createExcavation(request, response) {
+
+	var excavation = new Excavation({
+		name: request.body.name,
+		address: request.body.address,
+		postcode: request.body.postcode,
+		duration: request.body.duration,
+		url: request.body.url,
+		description: request.body.description
+	});
+
+	excavation.save(function (error) {
+
+		if (error) {
+			response.status(500).json({
+				success: false,
+				message: 'Internal server error'
+			});
+
+			throw error;
+		}
+
+		response.json({
+			success: true
+		});
+	});
+});
+
+app.use('/FreeArch', apiRouter);
 
 app.listen(PORT, function () {
   console.log('Listening on port ' + PORT);

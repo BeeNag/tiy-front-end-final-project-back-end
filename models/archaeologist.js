@@ -51,7 +51,7 @@ var archaeologistSchema = new Schema({
 		required: true
 	},
 	created_at: {
-		type: Date.now
+		type: Date
 	}
 });
 
