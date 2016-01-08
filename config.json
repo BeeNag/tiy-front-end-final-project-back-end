@@ -1,0 +1,13 @@
+{
+  "server": {
+    "hostName": "localhost",
+    "port": "8282"
+  },
+  "token": {
+    "secret": "secretapplication",
+    "expiresInSeconds": "3600"
+  },
+  "database": {
+    "name": "final-project"
+  }
+}

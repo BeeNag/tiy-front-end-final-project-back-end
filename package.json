@@ -1,0 +1,27 @@
+{
+  "name": "tiy-front-end-final-project-back-end",
+  "version": "1.0.0",
+  "description": "Back-end for final project at the Iron Yard.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BeeNag/tiy-front-end-final-project-back-end.git"
+  },
+  "author": "Artemij Fedosejev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BeeNag/tiy-front-end-final-project-back-end/issues"
+  },
+  "homepage": "https://github.com/BeeNag/tiy-front-end-final-project-back-end",
+  "dependencies": {
+    "bcrypt": "^0.8.5",
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^5.4.1",
+    "mongoose": "^4.3.4"
+  }
+}
