@@ -22,6 +22,12 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
+app.use(function (request, response, next) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 mongoose.connect('mongodb://' + HOST_NAME + '/' + DATABASE_NAME);
 
 var apiRouter = express.Router();
