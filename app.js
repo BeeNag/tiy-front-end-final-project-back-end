@@ -213,7 +213,9 @@ apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(re
 		first_name: request.body.first_name,
 		last_name: request.body.last_name,
 		date_of_birth: request.body.date_of_birth,
-		address: request.body.address,
+		address1: request.body.address1,
+    address2: request.body.address2,
+    address3: request.body.address3,
 		city: request.body.city,
 		postcode: request.body.postcode,
 		home_phone_number: request.body.home_phone_number,
@@ -246,7 +248,9 @@ apiRouter.post('/companies/', function createCompanyProfileDetails(request, resp
 
 	var company = new Company({
 		name: request.body.name,
-		address: request.body.address,
+		address1: request.body.address1,
+    address2: request.body.address2,
+    address3: request.body.address3,
 		city: request.body.city,
 		postcode: request.body.postcode,
 		phone_number: request.body.phone_number,

@@ -6,9 +6,15 @@ var companySchema = new Schema({
 		type: String,
 		required: true
 	},
-	address: {
+	address1: {
 		type: String,
 		required: true
+	},
+	address2: {
+		type: String
+	},
+	address3: {
+		type: String
 	},
 	city: {
 		type: String,
@@ -19,7 +25,7 @@ var companySchema = new Schema({
 		required: true
 	},
 	phone_number: {
-		type:
+		type: String,
 		required: true
 	},
 	url: {

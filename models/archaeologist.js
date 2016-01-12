@@ -14,9 +14,15 @@ var archaeologistSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	address: {
+	address1: {
 		type: String,
 		required: true
+	},
+	address2: {
+		type: String
+	},
+	address3: {
+		type: String
 	},
 	city: {
 		type: String,
