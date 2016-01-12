@@ -11,12 +11,10 @@ var excavationSchema = new Schema({
 		required: true
 	},
 	address2: {
-		type: String,
-		required: true
+		type: String
 	},
 	address3: {
-		type: String,
-		required: true
+		type: String
 	},
 	postcode: {
 		type: String,
