@@ -235,34 +235,6 @@ apiRouter.post('/companies/', function createCompanyProfileDetails(request, resp
   });
 });
 
-apiRouter.post('/excavations/', function createExcavation(request, response) {
-
-  var excavation = new Excavation({
-    name: request.body.name,
-    address: request.body.address,
-    postcode: request.body.postcode,
-    duration: request.body.duration,
-    url: request.body.url,
-    description: request.body.description
-  });
-
-  excavation.save(function (error) {
-
-    if (error) {
-      response.status(500).json({
-        success: false,
-        message: 'Internal server error'
-      });
-
-      throw error;
-    }
-
-    response.json({
-      success: true
-    });
-  });
-});
-
 // route middleware to verify a token
 apiRouter.use(function verifyToken(request, response, next) {
 
