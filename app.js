@@ -215,7 +215,7 @@ apiRouter.post('/companies/', function createCompanyProfileDetails(request, resp
     postcode: request.body.postcode,
     phone_number: request.body.phone_number,
     url: request.body.url,
-    description: description.body.description
+    description: request.body.description
   });
 
   company.save(function (error) {
