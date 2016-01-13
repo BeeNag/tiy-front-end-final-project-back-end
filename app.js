@@ -274,6 +274,41 @@ apiRouter.use(function verifyToken(request, response, next) {
   }
 });
 
+apiRouter.get('/archaeologists/:first_name:last_name?token=', function getArchaeologistProfile(request, response) {
+
+  var first_name = request.params.first_name;
+  var last_name = request.params.last_name;
+
+  Archaeologist.find({first_name: first_name, last_name: last_name}, function handleDBQueryResults(error, archaeologists) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    response.status(200).json(archaeologists);
+  });
+});
+
+apiRouter.get('/companies?token=', function getCompanyProfile(request, response) {
+
+  Archaeologist.find(function handleDBQueryResults(error, companies) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    response.status(200).json(companies);
+  });
+});
+
 app.use('/FreeArch', apiRouter);
 
 app.listen(PORT, function () {
