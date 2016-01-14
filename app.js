@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
-var app = express();
+var app = express(); 
 
 var CONFIG = require('./config.json');
 var PORT = parseInt(CONFIG.server.port, 10);
@@ -115,7 +115,7 @@ apiRouter.post('/users/', function createUser(request, response) {
     if (user) {
       response.status(409).json({
         success: false,
-        message: 'User with the username \'' + request.body.username + '\' already exists.'
+        message: 'User with the email \'' + request.body.email + '\' already exists.'
       });
 
       return;
@@ -171,6 +171,7 @@ apiRouter.post('/users/', function createUser(request, response) {
 apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(request, response) {
 
   var archaeologist = new Archaeologist({
+    id: request.body.id,
     first_name: request.body.first_name,
     last_name: request.body.last_name,
     date_of_birth: request.body.date_of_birth,
@@ -274,12 +275,13 @@ apiRouter.use(function verifyToken(request, response, next) {
   }
 });
 
-apiRouter.get('/archaeologists/:first_name:last_name?token=', function getArchaeologistProfile(request, response) {
+apiRouter.get('/archaeologists/:id', function getArchaeologistProfile(request, response) {
 
-  var first_name = request.params.first_name;
-  var last_name = request.params.last_name;
+  var id = request.params.id;
+  console.log(id);
+  console.log('yay');
 
-  Archaeologist.find({first_name: first_name, last_name: last_name}, function handleDBQueryResults(error, archaeologists) {
+  Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologists) {
     if (error) {
       response.status(500).json({
         success: false,
@@ -290,6 +292,96 @@ apiRouter.get('/archaeologists/:first_name:last_name?token=', function getArchae
     }
 
     response.status(200).json(archaeologists);
+  });
+});
+
+apiRouter.patch('/archaeologists/:id', function updateArchaeologistProfile(request, response) {
+
+  var id = request.params.id;
+  var body = request.body;
+  console.log('PATCH archaeologists ' + id);
+  console.log(body);
+
+  Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologist) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    if (archaeologist) {
+      if (body.address1) {
+        archaeologist.address1 = body.address1;
+      }
+      if (body.address2) {
+        archaeologist.address2 = body.address2;
+      } 
+      if (body.address3) {
+        archaeologist.address3 = body.address3;
+      }
+      if (body.city) {
+        archaeologist.city = body.city;
+      }
+      if (body.postcode) {
+        archaeologist.postcode = body.postcode;
+      }
+      if (body.home_phone_number) {
+        archaeologist.home_phone_number = body.home_phone_number;
+      }
+      if (body.mobile_phone_number) {
+        archaeologist.mobile_phone_number = body.mobile_phone_number;
+      }
+      if (body.specialism) {
+        archaeologist.specialism = body.specialism;
+      }
+      if (body.experience) {
+        archaeologist.experience = body.experience;
+      }
+      if (body.description) {
+        archaeologist.description = body.description;
+      }
+
+      archaeologist.save();
+
+      response.json(archaeologist);
+
+      return;
+    }
+
+    response.status(404).json({});
+  });
+});
+
+apiRouter.delete('/archaeologists/:id', function deleteArchaeologistProfile(request, response) {
+
+  var id = request.params.id;
+  console.log('DELETE archaeologists ' + id);
+
+  Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologist) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    if (archaeologist) {
+      archaeologist.remove(function (error) {
+        if (error) {
+          response.status(500).send(error);
+          return;
+        }
+
+        response.status(204);
+      });
+      return;
+    }
+    response.status(404).json({});
   });
 });
 
