@@ -299,7 +299,7 @@ apiRouter.patch('/archaeologists/:id', function updateArchaeologistProfile(reque
 
   var id = request.params.id;
   var body = request.body;
-  console.log('PATCH archaeologists ' + id);
+  console.log('PATCH archaeologist ' + id);
   console.log(body);
 
   Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologist) {
@@ -358,7 +358,7 @@ apiRouter.patch('/archaeologists/:id', function updateArchaeologistProfile(reque
 apiRouter.delete('/archaeologists/:id', function deleteArchaeologistProfile(request, response) {
 
   var id = request.params.id;
-  console.log('DELETE archaeologists ' + id);
+  console.log('DELETE archaeologist ' + id);
 
   Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologist) {
     if (error) {
@@ -385,9 +385,13 @@ apiRouter.delete('/archaeologists/:id', function deleteArchaeologistProfile(requ
   });
 });
 
-apiRouter.get('/companies?token=', function getCompanyProfile(request, response) {
+apiRouter.get('/companies/:id', function getCompanyProfile(request, response) {
 
-  Archaeologist.find(function handleDBQueryResults(error, companies) {
+  var id = request.params.id;
+  console.log(id);
+  console.log('yay');
+
+  Company.findOne(function handleDBQueryResults(error, companies) {
     if (error) {
       response.status(500).json({
         success: false,
@@ -398,6 +402,90 @@ apiRouter.get('/companies?token=', function getCompanyProfile(request, response)
     }
 
     response.status(200).json(companies);
+  });
+});
+
+apiRouter.patch('/companies/:id', function updateCompanyProfile(request, response) {
+
+  var id = request.params.id;
+  var body = request.body;
+  console.log('PATCH company ' + id);
+  console.log(body);
+
+  Company.findOne({id: id}, function handleDBQueryResults(error, company) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    if (company) {
+      if (body.address1) {
+        company.address1 = body.address1;
+      }
+      if (body.address2) {
+        company.address2 = body.address2;
+      } 
+      if (body.address3) {
+        company.address3 = body.address3;
+      }
+      if (body.city) {
+        company.city = body.city;
+      }
+      if (body.postcode) {
+        company.postcode = body.postcode;
+      }
+      if (body.phone_number) {
+        company.phone_number = body.phone_number;
+      }
+      if (body.url) {
+        company.url = body.url;
+      }
+      if (body.description) {
+        company.description = body.description;
+      }
+
+      company.save();
+
+      response.json(company);
+
+      return;
+    }
+
+    response.status(404).json({});
+  });
+});
+
+apiRouter.delete('/companies/:id', function deleteCompanyProfile(request, response) {
+
+  var id = request.params.id;
+  console.log('DELETE company ' + id);
+
+  Company.findOne({id: id}, function handleDBQueryResults(error, company) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    if (company) {
+      company.remove(function (error) {
+        if (error) {
+          response.status(500).send(error);
+          return;
+        }
+
+        response.status(204);
+      });
+      return;
+    }
+    response.status(404).json({});
   });
 });
 
