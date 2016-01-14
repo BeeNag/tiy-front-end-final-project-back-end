@@ -309,7 +309,7 @@ apiRouter.get('/companies?token=', function getCompanyProfile(request, response)
   });
 });
 
-app.use('/FreeArch', apiRouter);
+app.use('/api', apiRouter);
 
 app.listen(PORT, function () {
   console.log('Listening on port ' + PORT);
