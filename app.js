@@ -207,6 +207,7 @@ apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(re
 apiRouter.post('/companies/', function createCompanyProfileDetails(request, response) {
 
   var company = new Company({
+    id: request.body.id,
     name: request.body.name,
     address1: request.body.address1,
     address2: request.body.address2,
@@ -280,7 +281,7 @@ apiRouter.get('/archaeologists/:id', function getArchaeologistProfile(request, r
   console.log(id);
   console.log('yay');
 
-  Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologists) {
+  Archaeologist.findOne({id: id}, function handleDBQueryResults(error, archaeologist) {
     if (error) {
       response.status(500).json({
         success: false,
@@ -290,7 +291,7 @@ apiRouter.get('/archaeologists/:id', function getArchaeologistProfile(request, r
       throw error;
     }
 
-    response.status(200).json(archaeologists);
+    response.status(200).json(archaeologist);
   });
 });
 
