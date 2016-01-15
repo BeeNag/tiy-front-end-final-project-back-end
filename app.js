@@ -14,7 +14,6 @@ var TOKEN_EXPIRES = parseInt(CONFIG.token.expiresInSeconds, 10);
 var User = require('./models/user.js');
 var Archaeologist = require('./models/archaeologist.js');
 var Company = require('./models/company.js');
-var Excavation = require('./models/excavation.js');
 var Thumbnail = require('./models/thumbnail.js');
 
 app.use(bodyParser.json());

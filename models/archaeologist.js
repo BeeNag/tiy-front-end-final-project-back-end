@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var archaeologistSchema = new Schema({
 	id: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	first_name: {
 		type: String,
