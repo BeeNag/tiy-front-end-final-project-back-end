@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
-var app = express(); 
+var app = express();
+var cors = require('cors');
 
 var CONFIG = require('./config.json');
 var PORT = parseInt(CONFIG.server.port, 10);
@@ -21,11 +22,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 
-app.use(function (request, response, next) {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(cors());
 
 mongoose.connect('mongodb://' + HOST_NAME + '/' + DATABASE_NAME);
 
