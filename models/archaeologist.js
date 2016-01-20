@@ -24,10 +24,12 @@ var archaeologistSchema = new Schema({
 		required: true
 	},
 	address2: {
-		type: String
+		type: String,
+		required: true
 	},
 	address3: {
-		type: String
+		type: String,
+		required: true
 	},
 	city: {
 		type: String,
