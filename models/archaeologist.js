@@ -16,7 +16,7 @@ var archaeologistSchema = new Schema({
 		required: true
 	},
 	date_of_birth: {
-		type: Date,
+		type: String,
 		required: true
 	},
 	address1: {
@@ -62,6 +62,9 @@ var archaeologistSchema = new Schema({
 	description: {
 		type: String,
 		required: true
+	},
+	image: {
+		type: String
 	},
 	email: {
     	type: String,

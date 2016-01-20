@@ -180,6 +180,14 @@ apiRouter.post('/companies/authenticate', function authenticateCompany(request, 
   });
 });
 
+apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
+
+  response.json({
+    success: true,
+    file: request.file
+  });
+});
+
 apiRouter.post('/archaeologists/', function createArchaeologist(request, response) {
 
   // find the user
@@ -267,14 +275,6 @@ apiRouter.post('/archaeologists/', function createArchaeologist(request, respons
   });
 });
 
-apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
-
-  response.json({
-    success: true,
-    file: request.file
-  });
-});
-
 apiRouter.post('/companies/', function createCompany(request, response) {
 
   // find the user
@@ -356,75 +356,6 @@ apiRouter.post('/companies/', function createCompany(request, response) {
     });
   });
 });
-
-// apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(request, response) {
-
-//   var archaeologist = new Archaeologist({
-//     id: request.body.id,
-//     first_name: request.body.first_name,
-//     last_name: request.body.last_name,
-//     date_of_birth: request.body.date_of_birth,
-//     address1: request.body.address1,
-//     address2: request.body.address2,
-//     address3: request.body.address3,
-//     city: request.body.city,
-//     postcode: request.body.postcode,
-//     home_phone_number: request.body.home_phone_number,
-//     mobile_phone_number: request.body.mobile_phone_number,
-//     experience: request.body.experience,
-//     specialism: request.body.specialism,
-//     cscs_card: request.body.cscs_card,
-//     description: request.body.description
-//   });
-
-//   archaeologist.save(function (error) {
-
-//     if (error) {
-//             response.status(500).json({
-//               success: false,
-//               message: 'Internal server error'
-//             });
-
-//             throw error;
-//         }
-
-//         response.json({
-//             success: true
-//         });
-//   });
-// });
-
-// apiRouter.post('/companies/', function createCompanyProfileDetails(request, response) {
-
-//   var company = new Company({
-//     id: request.body.id,
-//     name: request.body.name,
-//     address1: request.body.address1,
-//     address2: request.body.address2,
-//     address3: request.body.address3,
-//     city: request.body.city,
-//     postcode: request.body.postcode,
-//     phone_number: request.body.phone_number,
-//     url: request.body.url,
-//     description: request.body.description
-//   });
-
-//   company.save(function (error) {
-
-//     if (error) {
-//       response.status(500).json({
-//         success: false,
-//         message: 'Internal server error'
-//       });
-
-//       throw error;
-//     }
-
-//     response.json({
-//       success: true
-//     });
-//   });
-// });
 
 // route middleware to verify a token
 apiRouter.use(function verifyToken(request, response, next) {
