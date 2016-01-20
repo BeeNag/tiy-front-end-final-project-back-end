@@ -3,8 +3,11 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
-var app = express();
+var multer = require('multer');
+var path = require('path');
 var cors = require('cors');
+var crypto = require('crypto');
+var app = express();
 
 var CONFIG = require('./config.json');
 var PORT = parseInt(CONFIG.server.port, 10);
@@ -12,10 +15,32 @@ var HOST_NAME = CONFIG.server.hostName;
 var DATABASE_NAME = CONFIG.database.name;
 var TOKEN_SECRET = CONFIG.token.secret;
 var TOKEN_EXPIRES = parseInt(CONFIG.token.expiresInSeconds, 10);
-var User = require('./models/user.js');
+var FILE_SIZE_LIMIT_IN_MB = 5;
+var UPLOAD_PATH = '/images/uploads/';
 var Archaeologist = require('./models/archaeologist.js');
 var Company = require('./models/company.js');
 var Thumbnail = require('./models/thumbnail.js');
+
+var storage = multer.diskStorage({
+  destination: __dirname + UPLOAD_PATH,
+  filename: function (request, file, callback) {
+    crypto.pseudoRandomBytes(16, function (error, raw) {
+      if (error) {
+        return callback(error, null);
+      }
+
+      callback(null, raw.toString('hex') + path.extname(file.originalname));
+    })
+  },
+  limits: {
+    fileSize: FILE_SIZE_LIMIT_IN_MB * 1000000,
+    files: 1
+  }
+});
+
+var upload = multer({ storage: storage });
+
+app.use(express.static(__dirname + '/images'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -239,6 +264,14 @@ apiRouter.post('/archaeologists/', function createArchaeologist(request, respons
         });
       });
     });
+  });
+});
+
+apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
+
+  response.json({
+    success: true,
+    file: request.file
   });
 });
 

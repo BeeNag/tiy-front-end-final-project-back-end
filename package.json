@@ -21,8 +21,11 @@
     "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "cors": "^2.7.1",
+    "crypto": "0.0.3",
     "express": "^4.13.3",
     "jsonwebtoken": "^5.4.1",
-    "mongoose": "^4.3.4"
+    "mongoose": "^4.3.4",
+    "multer": "^1.1.0",
+    "path": "^0.12.7"
   }
 }
