@@ -29,12 +29,12 @@ mongoose.connect('mongodb://' + HOST_NAME + '/' + DATABASE_NAME);
 var apiRouter = express.Router();
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
-apiRouter.post('/users/authenticate', function authenticateUser(request, response) {
+apiRouter.post('/archaeologists/authenticate', function authenticateArchaeologist(request, response) {
 
   // find the user
-  User.findOne({
+  Archaeologist.findOne({
     email: request.body.email
-  }, function handleQuery(error, user) {
+  }, function handleQuery(error, archaeologist) {
 
     if (error) {
       response.status(500).json({
@@ -45,7 +45,7 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
       throw error;
     }
 
-    if (! user) {
+    if (! archaeologist) {
 
       response.status(401).json({
         success: false,
@@ -55,7 +55,7 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
       return;
     }
 
-    bcrypt.compare(request.body.password, user.password, function (error, result) {
+    bcrypt.compare(request.body.password, archaeologist.password, function (error, result) {
 
       if (error) {
         response.status(500).json({
@@ -78,7 +78,7 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
 
       // if user is found and password is right
       // create a token
-      var token = jsonwebtoken.sign({ email: user.email }, TOKEN_SECRET, {
+      var token = jsonwebtoken.sign({ email: archaeologist.email }, TOKEN_SECRET, {
         expiresIn: TOKEN_EXPIRES
       });
 
@@ -92,12 +92,12 @@ apiRouter.post('/users/authenticate', function authenticateUser(request, respons
   });
 });
 
-apiRouter.post('/users/', function createUser(request, response) {
+apiRouter.post('/companies/authenticate', function authenticateCompany(request, response) {
 
   // find the user
-  User.findOne({
+  Company.findOne({
     email: request.body.email
-  }, function handleQuery(error, user) {
+  }, function handleQuery(error, company) {
 
     if (error) {
       response.status(500).json({
@@ -108,11 +108,74 @@ apiRouter.post('/users/', function createUser(request, response) {
       throw error;
     }
 
-    if (user) {
-      response.status(409).json({
+    if (! company) {
+
+      response.status(401).json({
         success: false,
-        message: 'User with the email \'' + request.body.email + '\' already exists.'
+        message: 'Authentication failed. User not found.'
       });
+
+      return;
+    }
+
+    bcrypt.compare(request.body.password, company.password, function (error, result) {
+
+      if (error) {
+        response.status(500).json({
+          success: false,
+          message: 'Internal server error'
+        });
+
+        throw error;
+      }
+
+      if (! result) {
+
+        response.status(401).json({
+          success: false,
+          message: 'Authentication failed. Wrong password.'
+        });
+
+        return;
+      }
+
+      // if user is found and password is right
+      // create a token
+      var token = jsonwebtoken.sign({ email: company.email }, TOKEN_SECRET, {
+        expiresIn: TOKEN_EXPIRES
+      });
+
+      // return the information including token as JSON
+      response.json({
+        success: true,
+        token: token
+      });
+
+    });
+  });
+});
+
+apiRouter.post('/archaeologists/', function createArchaeologist(request, response) {
+
+  // find the user
+  Archaeologist.findOne({
+    email: request.body.email
+  }, function handleQuery(error, archaeologist) {
+
+    if (error) {
+        response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+    });
+
+      throw error;
+    }
+
+    if (archaeologist) {
+        response.status(409).json({
+        success: false,
+        message: 'Archaeologist with the email \'' + request.body.email + '\' already exists.'
+    });
 
       return;
     }
@@ -139,12 +202,27 @@ apiRouter.post('/users/', function createUser(request, response) {
           throw error;
         }
 
-        var user = new User({
+        var archaeologist = new Archaeologist({
+          id: request.body.id,
+          first_name: request.body.first_name,
+          last_name: request.body.last_name,
+          date_of_birth: request.body.date_of_birth,
+          address1: request.body.address1,
+          address2: request.body.address2,
+          address3: request.body.address3,
+          city: request.body.city,
+          postcode: request.body.postcode,
+          home_phone_number: request.body.home_phone_number,
+          mobile_phone_number: request.body.mobile_phone_number,
+          experience: request.body.experience,
+          specialism: request.body.specialism,
+          cscs_card: request.body.cscs_card,
+          description: request.body.description,
           email: request.body.email,
           password: hash
         });
 
-        user.save(function (error) {
+        archaeologist.save(function (error) {
 
           if (error) {
             response.status(500).json({
@@ -164,59 +242,12 @@ apiRouter.post('/users/', function createUser(request, response) {
   });
 });
 
-apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(request, response) {
+apiRouter.post('/companies/', function createCompany(request, response) {
 
-  var archaeologist = new Archaeologist({
-    id: request.body.id,
-    first_name: request.body.first_name,
-    last_name: request.body.last_name,
-    date_of_birth: request.body.date_of_birth,
-    address1: request.body.address1,
-    address2: request.body.address2,
-    address3: request.body.address3,
-    city: request.body.city,
-    postcode: request.body.postcode,
-    home_phone_number: request.body.home_phone_number,
-    mobile_phone_number: request.body.mobile_phone_number,
-    experience: request.body.experience,
-    specialism: request.body.specialism,
-    cscs_card: request.body.cscs_card,
-    description: request.body.description
-  });
-
-  archaeologist.save(function (error) {
-
-    if (error) {
-            response.status(500).json({
-              success: false,
-              message: 'Internal server error'
-            });
-
-            throw error;
-        }
-
-        response.json({
-            success: true
-        });
-  });
-});
-
-apiRouter.post('/companies/', function createCompanyProfileDetails(request, response) {
-
-  var company = new Company({
-    id: request.body.id,
-    name: request.body.name,
-    address1: request.body.address1,
-    address2: request.body.address2,
-    address3: request.body.address3,
-    city: request.body.city,
-    postcode: request.body.postcode,
-    phone_number: request.body.phone_number,
-    url: request.body.url,
-    description: request.body.description
-  });
-
-  company.save(function (error) {
+  // find the user
+  Company.findOne({
+    email: request.body.email
+  }, function handleQuery(error, company) {
 
     if (error) {
       response.status(500).json({
@@ -227,11 +258,140 @@ apiRouter.post('/companies/', function createCompanyProfileDetails(request, resp
       throw error;
     }
 
-    response.json({
-      success: true
+    if (company) {
+        response.status(409).json({
+        success: false,
+        message: 'Company with the email \'' + request.body.email + '\' already exists.'
+    });
+
+      return;
+    }
+
+    bcrypt.genSalt(10, function (error, salt) {
+
+      if (error) {
+          response.status(500).json({
+          success: false,
+          message: 'Internal server error'
+      });
+
+        throw error;
+      }
+
+      bcrypt.hash(request.body.password, salt, function (error, hash) {
+
+        if (error) {
+            response.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+
+          throw error;
+        }
+
+        var company = new Company({
+          id: request.body.id,
+          name: request.body.name,
+          address1: request.body.address1,
+          address2: request.body.address2,
+          address3: request.body.address3,
+          city: request.body.city,
+          postcode: request.body.postcode,
+          phone_number: request.body.phone_number,
+          url: request.body.url,
+          description: request.body.description,
+          email: request.body.email,
+          password: hash
+        });
+
+        company.save(function (error) {
+
+          if (error) {
+              response.status(500).json({
+              success: false,
+              message: 'Internal server error'
+          });
+
+            throw error;
+          }
+
+          response.json({
+            success: true
+          });
+        });
+      });
     });
   });
 });
+
+// apiRouter.post('/archaeologists/', function createArchaeologistProfileDetails(request, response) {
+
+//   var archaeologist = new Archaeologist({
+//     id: request.body.id,
+//     first_name: request.body.first_name,
+//     last_name: request.body.last_name,
+//     date_of_birth: request.body.date_of_birth,
+//     address1: request.body.address1,
+//     address2: request.body.address2,
+//     address3: request.body.address3,
+//     city: request.body.city,
+//     postcode: request.body.postcode,
+//     home_phone_number: request.body.home_phone_number,
+//     mobile_phone_number: request.body.mobile_phone_number,
+//     experience: request.body.experience,
+//     specialism: request.body.specialism,
+//     cscs_card: request.body.cscs_card,
+//     description: request.body.description
+//   });
+
+//   archaeologist.save(function (error) {
+
+//     if (error) {
+//             response.status(500).json({
+//               success: false,
+//               message: 'Internal server error'
+//             });
+
+//             throw error;
+//         }
+
+//         response.json({
+//             success: true
+//         });
+//   });
+// });
+
+// apiRouter.post('/companies/', function createCompanyProfileDetails(request, response) {
+
+//   var company = new Company({
+//     id: request.body.id,
+//     name: request.body.name,
+//     address1: request.body.address1,
+//     address2: request.body.address2,
+//     address3: request.body.address3,
+//     city: request.body.city,
+//     postcode: request.body.postcode,
+//     phone_number: request.body.phone_number,
+//     url: request.body.url,
+//     description: request.body.description
+//   });
+
+//   company.save(function (error) {
+
+//     if (error) {
+//       response.status(500).json({
+//         success: false,
+//         message: 'Internal server error'
+//       });
+
+//       throw error;
+//     }
+
+//     response.json({
+//       success: true
+//     });
+//   });
+// });
 
 // route middleware to verify a token
 apiRouter.use(function verifyToken(request, response, next) {

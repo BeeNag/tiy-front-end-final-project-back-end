@@ -42,7 +42,16 @@ var companySchema = new Schema({
 	description: {
 		type: String,
 		required: true
-	}
+	},
+	email: {
+    	type: String,
+    	required: true,
+    	unique: true
+  	},
+  	password: {
+    	type: String,
+    	required: true
+  	}
 });
 
 module.exports = mongoose.model('Company', companySchema, 'companies');
