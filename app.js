@@ -180,13 +180,14 @@ apiRouter.post('/companies/authenticate', function authenticateCompany(request, 
   });
 });
 
-apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
+// apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
 
-  response.json({
-    success: true,
-    file: request.file
-  });
-});
+//   response.json({
+//     success: true,
+//     file: request.file,
+//     id: request.body.userId
+//   });
+// });
 
 apiRouter.post('/archaeologists/', function createArchaeologist(request, response) {
 
@@ -394,6 +395,67 @@ apiRouter.use(function verifyToken(request, response, next) {
       message: 'No token provided.'
     });
   }
+});
+
+apiRouter.post('/images/upload', function validate(request, response, next) {
+
+  var userId = request.body.userId;
+
+  Archaeologist.findOne({id: userId}, function handleDBQueryResults(error, archaeologist) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    next();
+  });  
+
+}, upload.single('image'), function addImageToArchaeologistProfile(request, response, next) {
+
+  var userId = request.body.userId;
+
+  Archaeologist.findOne({id: userId}, function updateArchaeologistProfileWithImage(error, archaeologist) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    if (archaeologist) {
+      archaeologist.image = request.file.filename;
+    }
+
+    archaeologist.save(function (error) {
+
+      if (error) {
+        response.status(500).json({
+          success: false,
+          message: 'Internal server error'
+        });
+
+        throw error;
+      }
+
+      next();
+    });
+
+  });
+
+  
+
+}, function handleRequest(request, response) {
+  
+  response.json({
+    success: true,
+    message: 'All good'
+  });
 });
 
 apiRouter.get('/archaeologists/:id', function getArchaeologistProfile(request, response) {
