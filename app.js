@@ -498,7 +498,9 @@ apiRouter.delete('/archaeologists/:id', function deleteArchaeologistProfile(requ
           return;
         }
 
-        response.status(204);
+        response.status(204).send({
+          success: true
+        });
       });
       return;
     }
@@ -602,7 +604,9 @@ apiRouter.delete('/companies/:id', function deleteCompanyProfile(request, respon
           return;
         }
 
-        response.status(204);
+        response.status(204).send({
+          success: true
+        });
       });
       return;
     }
