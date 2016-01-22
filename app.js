@@ -576,7 +576,7 @@ apiRouter.get('/companies/:id', function getCompanyProfile(request, response) {
   console.log(id);
   console.log('yay');
 
-  Company.findOne(function handleDBQueryResults(error, companies) {
+  Company.findOne({id: id}, function handleDBQueryResults(error, company) {
     if (error) {
       response.status(500).json({
         success: false,
@@ -586,7 +586,7 @@ apiRouter.get('/companies/:id', function getCompanyProfile(request, response) {
       throw error;
     }
 
-    response.status(200).json(companies);
+    response.status(200).json(company);
   });
 });
 
@@ -673,6 +673,26 @@ apiRouter.delete('/companies/:id', function deleteCompanyProfile(request, respon
       return;
     }
     response.status(404).json({});
+  });
+});
+
+apiRouter.get('/search/:searchString/', function searchArchaeologistProfiles(request, response) {
+
+  var searchString = request.params.searchString;
+
+  console.log(searchString);
+
+  Archaeologist.find({specialism: searchString}, function handleDBQueryResults(error, archaeologists) {
+    if (error) {
+      response.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+
+      throw error;
+    }
+
+    response.status(200).json(archaeologists);
   });
 });
 
