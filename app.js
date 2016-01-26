@@ -107,10 +107,13 @@ apiRouter.post('/archaeologists/authenticate', function authenticateArchaeologis
         expiresIn: TOKEN_EXPIRES
       });
 
+      var id = archaeologist.id;
+
       // return the information including token as JSON
       response.json({
         success: true,
-        token: token
+        token: token,
+        id: id
       });
 
     });
@@ -170,10 +173,13 @@ apiRouter.post('/companies/authenticate', function authenticateCompany(request, 
         expiresIn: TOKEN_EXPIRES
       });
 
+      var id = company.id;
+
       // return the information including token as JSON
       response.json({
         success: true,
-        token: token
+        token: token,
+        id: id
       });
 
     });
