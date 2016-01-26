@@ -186,15 +186,6 @@ apiRouter.post('/companies/authenticate', function authenticateCompany(request, 
   });
 });
 
-// apiRouter.post('/images/upload', upload.single('image'), function handleRequest(request, response) {
-
-//   response.json({
-//     success: true,
-//     file: request.file,
-//     id: request.body.userId
-//   });
-// });
-
 apiRouter.post('/archaeologists/', function createArchaeologist(request, response) {
 
   // find the user
